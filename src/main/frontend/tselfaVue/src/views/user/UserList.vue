@@ -55,7 +55,8 @@
 
 <script>
 import { computed, onMounted } from 'vue'
-
+import { useStore } from '../../useStore.js'
+import UserApiService from "../../UserApiService.js";
 
 export default {
   name: 'UserList',
@@ -64,17 +65,19 @@ export default {
 
     // 컴포넌트 마운트 시 사용자 목록 조회
     onMounted(() => {
-      store.dispatch('fetchUsers')
+      UserApiService.getAllUsers();
+      // store.dispatch('fetchUsers')
     })
 
     // Vuex 상태 조회
-    const users = computed(() => store.getters.getUsers)
-    const isLoading = computed(() => store.state.loading)
+    const users = computed(() => store.getUsers)
+    const isLoading = computed(() => store.loading)
 
     // 사용자 삭제 핸들러
     const deleteUser = async (id) => {
       if (confirm('이 사용자를 정말 삭제하시겠습니까?')) {
-        await store.dispatch('deleteUser', id)
+        // await store.dispatch('deleteUser', id)
+        await UserApiService.deleteUser(id);
       }
     }
 
