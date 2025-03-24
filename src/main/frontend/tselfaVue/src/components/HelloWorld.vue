@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div><p>왜 안하는디!!!!</p></div>
+  <div><p></p></div>
 </template>
 
 <style scoped>
