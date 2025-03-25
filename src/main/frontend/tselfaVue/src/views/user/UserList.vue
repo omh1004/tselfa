@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { computed, onMounted } from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import { useStore } from '../../useStore.js'
 import UserApiService from "../../UserApiService.js";
 
@@ -64,14 +64,16 @@ export default {
     const store = useStore()
 
     // 컴포넌트 마운트 시 사용자 목록 조회
-    onMounted(() => {
-      UserApiService.getAllUsers();
+    onMounted(async () => {
+      // UserApiService.getAllUsers();
       // store.dispatch('fetchUsers')
+      users.value = await store.getUsers;
+      isLoading.value = await store.loading;
     })
 
     // Vuex 상태 조회
-    const users = computed(() => store.getUsers)
-    const isLoading = computed(() => store.loading)
+    const users = ref([]);
+    const isLoading = ref(true);
 
     // 사용자 삭제 핸들러
     const deleteUser = async (id) => {

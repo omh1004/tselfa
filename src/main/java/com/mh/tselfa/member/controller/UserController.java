@@ -29,12 +29,11 @@ public class UserController {
 
     @GetMapping
     public List<User> getAllUsers() {
-        List<User> users = userService.findAll();
+        return userService.findAll();
 //        List<User> users = new ArrayList<User>();
 //        entities.forEach(e->{
 //           users.add(e.toDTO());
 //        });
-        return users;
 //        return userService.findAll();
     }
 

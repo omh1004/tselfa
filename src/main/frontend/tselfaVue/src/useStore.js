@@ -3,12 +3,11 @@ import UserApiService from "./UserApiService.js";
 
 export const useStore = defineStore('useStore',{
     state:()=>({
-        loading:true,
+        loading:false,
     }),
     getters:{
-        getUsers:async ()=>{
-            const userList = await UserApiService.getAllUsers();
-            this.loading = false;
+        getUsers:()=>{
+            const userList = UserApiService.getAllUsers();
             return userList;
         }
     }
