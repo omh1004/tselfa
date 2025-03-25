@@ -16,7 +16,7 @@ import lombok.*;
 import com.mh.tselfa.member.model.dto.User;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "TSUSER")
 @Getter
 @Setter
 @NoArgsConstructor

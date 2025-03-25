@@ -87,7 +87,7 @@
       </div>
 
       <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" @click="submitForm">
           {{ isEditing ? '수정' : '등록' }}
         </button>
         <button type="button" class="btn btn-secondary" @click="goBack">

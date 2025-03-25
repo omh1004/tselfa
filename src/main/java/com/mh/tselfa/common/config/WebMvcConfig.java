@@ -13,8 +13,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // 모든 경로에 적용
-                .allowedOrigins("http://localhost:5173/") // 프론트엔드 서버 주소
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOrigins("http://localhost:5173/","http://localhost:3000") // 프론트엔드 서버 주소
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")      // Intellij 포트 3000
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
