@@ -1,6 +1,16 @@
 <script>
 export default {
-  name: "sub01.vue"
+  name: "sub01.vue",
+  methods:{
+    getChapter(){
+      fetch('http://localhost:9090/api/chapterlist')
+          .then(response=>response.json())
+          .then(data=>console.log(data));
+    }
+  },
+  mounted(){
+    this.getChapter();
+  }
 }
 </script>
 
