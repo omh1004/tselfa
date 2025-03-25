@@ -1,11 +1,20 @@
 <script>
 export default {
   name: "sub01.vue",
+  data:()=>{
+    return{
+      chapterList:[],
+    }
+  },
   methods:{
     getChapter(){
       fetch('http://localhost:9090/api/chapterlist')
           .then(response=>response.json())
-          .then(data=>console.log(data));
+          .then(data=>{
+            this.chapterList = data.chapterList;
+            console.log(data);
+            console.log(this.chapterList);
+          });
     }
   },
   mounted(){
@@ -33,6 +42,15 @@ export default {
             <div class="btn-wrap">
               <button class="btn-icon"><i class="edit"></i>선택한 시험지 편집하기</button>
               <button class="btn-icon"><i class="newpaper"></i>신규 시험지 만들기</button>
+            </div>
+          </div>
+          <div> <!-- test -->
+            <div v-for="chapter in chapterList">
+              <!-- 이걸 봤을 때 이 3개로 묶어야 할 듯 -->
+              <p>{{ chapter.largeChapterName }}</p>
+              <p>{{ chapter.mediumChapterName }}</p>
+              <p>{{ chapter.smallChapterName }}</p>
+              <p>비우는칸</p>
             </div>
           </div>
           <div class="view-bottom">
