@@ -8,6 +8,12 @@ export default {
       chapterList:[],
       sortedChapterNameList:{},
       quizNum:30,
+      lowest:0,
+      low:0,
+      middle:0,
+      high:0,
+      highest:0,
+      quizsum:20,
     }
   },
   methods:{
@@ -125,6 +131,13 @@ export default {
         }
       })
       console.log(this.sortedChapterNameList);
+    },
+    quizNumSet(){
+      const inputsum = this.lowest+this.low+this.middle+this.high+this.highest;
+
+      if(this.quizsum==inputsum){
+        // 이건 나중에 생각해볼게
+      }
     }
   },
   mounted(){
@@ -341,27 +354,27 @@ export default {
             <!-- S: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
             <div class="range color01 fail">
               <span class="color01">최하</span>
-              <input type="number">
+              <input type="number" v-model.number="lowest">
             </div>
             <div class="range color02">
               <span class="color02">하</span>
-              <input type="number">
+              <input type="number" v-model.number="low">
             </div>
             <div class="range color03">
               <span class="color03">중</span>
-              <input type="number">
+              <input type="number" v-model.number="middle">
             </div>
             <div class="range color04">
               <span class="color04">상</span>
-              <input type="number">
+              <input type="number" v-model.number="high">
             </div>
             <div class="range color05">
               <span class="color05">최상</span>
-              <input type="number">
+              <input type="number" v-model.number="highest">
             </div>
             <div class="range total fail">
               <span>합계</span>
-              <span class="num">20</span>
+              <span class="num">{{ quizsum }}</span>
             </div>
             <!-- E: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
           </div>
