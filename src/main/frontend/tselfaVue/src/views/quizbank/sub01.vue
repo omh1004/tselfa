@@ -57,6 +57,9 @@ export default {
   mounted(){
     this.getChapter();
     common();
+  },
+  updated(){
+    common();
   }
 }
 </script>
@@ -81,7 +84,7 @@ export default {
             </div>
             <div class="btn-wrap">
               <button class="btn-icon"><i class="edit"></i>선택한 시험지 편집하기</button>
-              <button class="btn-icon"><i class="newpaper"></i>신규 시험지 만들기</button>
+              <button class="btn-icon" @click="$router.push('/sub02')"><i class="newpaper"></i>신규 시험지 만들기</button>
             </div>
           </div>
           <div> <!-- test -->
@@ -93,34 +96,33 @@ export default {
 <!--              <p>비우는칸</p>-->
 <!--            </div>-->
           </div>
-<!--          -->
           <div class="view-bottom">
             <div class="tab-list-type01 unit-acc-wrap">
-              <div class="scroll-inner" v-for="large in Object.keys(sortedChapterNameList)">
-                <button type="button" class="acc-btn">jquery가 작동을 안 해</button>
-                <div class="cnt">
-                  <div class="table">
-                    <!-- s 230706 선택 삭제, 편집하기 추가 -->
-                    <div class="fix-head">
-                      <span>시험지명</span>
-                      <span>미리보기</span>
-                      <span>편집하기</span>
-                      <span>다운로드</span>
-                    </div>
-                    <!-- e 230706 선택 삭제, 편집하기 추가 -->
-<!--                    -->
-<!--                    -->
-                    <div class="tbody">{{ large }}
-                      <div class="col" v-for="medium in Object.keys(sortedChapterNameList[large])">
-                        <span class="tit" v-for="small in Object.keys(sortedChapterNameList[large][medium])">{{ medium }} > {{ small }} > 1회</span>
-                        <span><button type="button" class="pop-btn btn-icon2" data-pop="prev-pop"><i
-                            class="preview"></i></button></span>
-                        <span><button type="button" class="btn-icon2"><i class="edit-type02"></i></button></span><!--230706 편집하기 버튼 추가-->
-                        <span>
-                          <div class="btn-wrap"><button type="button" class="btn-default">전체</button> <button
-                              type="button" class="btn-default">문제</button> <button type="button" class="btn-default">정답
-                              + 해설</button></div>
-                        </span>
+              <div class="scroll-inner">
+                <div v-for="large in Object.keys(sortedChapterNameList)">
+                  <button type="button" class="acc-btn">{{ large }}</button>
+                  <div class="cnt">
+                    <div class="table">
+                      <!-- s 230706 선택 삭제, 편집하기 추가 -->
+                      <div class="fix-head">
+                        <span>시험지명</span>
+                        <span>미리보기</span>
+                        <span>편집하기</span>
+                        <span>다운로드</span>
+                      </div>
+                      <!-- e 230706 선택 삭제, 편집하기 추가 -->
+                      <div class="tbody">
+                        <div class="col" v-for="medium in Object.keys(sortedChapterNameList[large])">
+                          <span class="tit" v-for="small in Object.keys(sortedChapterNameList[large][medium])">{{ medium }} > {{ small }} > 1회</span>
+                          <span><button type="button" class="pop-btn btn-icon2" data-pop="prev-pop"><i
+                              class="preview"></i></button></span>
+                          <span><button type="button" class="btn-icon2"><i class="edit-type02"></i></button></span><!--230706 편집하기 버튼 추가-->
+                          <span>
+                            <div class="btn-wrap"><button type="button" class="btn-default">전체</button> <button
+                                type="button" class="btn-default">문제</button> <button type="button" class="btn-default">정답
+                                + 해설</button></div>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

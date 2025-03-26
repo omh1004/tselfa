@@ -3,81 +3,155 @@ import { common } from '../../assets/js/common.js'
 
 export default {
   name: "sub02.vue",
+  data(){
+    return{
+      chapterList:[],
+      sortedChapterNameList:{},
+      quizNum:30,
+      lowest:0,
+      low:0,
+      middle:0,
+      high:0,
+      highest:0,
+      quizsum:20,
+    }
+  },
   methods:{
     // jquery가 많이 들어있어 일단 보류
-    jquery:$(function () {
-      // depth
-      let depBtn = $('.dep-btn');
+    jquery() {
+      $(function () {
+        // depth
+        let depBtn = $('.dep-btn');
 
-      function depFunc() {
-        let _this = $(this);
+        function depFunc() {
+          let _this = $(this);
 
-        if (!_this.hasClass('active')) {
-          _this.addClass('active');
-          _this.parents('.check-group').next('div').stop().slideUp('fast');
+          if (!_this.hasClass('active')) {
+            _this.addClass('active');
+            _this.parents('.check-group').next('div').stop().slideUp('fast');
 
-        } else {
-          _this.removeClass('active');
-          _this.parents('.check-group').next('div').stop().slideDown('fast');
+          } else {
+            _this.removeClass('active');
+            _this.parents('.check-group').next('div').stop().slideDown('fast');
+          }
+
+          _this.parents('.check-group').toggleClass('on');
         }
 
-        _this.parents('.check-group').toggleClass('on');
+        depBtn.on('click', depFunc);
+
+
+        // que-checkbox
+        let queChkAll = $('.que-allCheck');
+
+        function queCheckFunc() {
+          let _this = $(this);
+
+          if (_this.prop('checked')) {
+            _this.parents().next('ul').find('input[type=checkbox]').prop('checked', true);
+          } else {
+            _this.parents().next('ul').find('input[type=checkbox]').prop('checked', false);
+          }
+
+          if (_this.prop('checked') && _this.hasClass('depth01')) {
+            _this.parents('.check-group').next('div').find('input[type=checkbox]').prop('checked', true);
+          } else {
+            _this.parents('.check-group').next('div').find('input[type=checkbox]').prop('checked', false);
+          }
+
+          if (_this.prop('checked')) {
+            _this.parents('table').find('input[type=checkbox]').prop('checked', true);
+          } else {
+            _this.parents('table').find('input[type=checkbox]').prop('checked', false);
+          }
+
+        }
+
+        queChkAll.on('click', queCheckFunc);
+
+
+        $(".type-box .box .range").hide();
+        let stepBtn = $('.step-wrap .btn-line');
+
+        function stepFunc() {
+          let _this = $(this);
+          let stepData = _this.data('step');
+
+          _this.toggleClass('active');
+
+          if (_this.hasClass('active')) {
+            $(".range[data-step='" + stepData + "']").show();
+          } else {
+            $(".range[data-step='" + stepData + "']").hide();
+          }
+
+        }
+
+        stepBtn.on('click', stepFunc);
+      })
+    },
+    getChapter(){
+      fetch('http://localhost:8080/api/chapterlist')
+          .then(response=>response.json())
+          .then(data=>{
+            this.chapterList = data.chapterList;
+            console.log(data);
+            console.log(this.chapterList);
+            this.sortChapter();
+          });
+    },
+    sortChapter(){
+      this.chapterList.forEach(c=>{
+        const largeKey = Object.keys(this.sortedChapterNameList);
+        const largeChap = largeKey!=null?largeKey.find(lk => lk == c.largeChapterName):null;
+        if(largeChap!=null){
+          const mediumKey = Object.keys(this.sortedChapterNameList[largeChap]);
+          const mediumChap = mediumKey!=null?mediumKey.find(mk => mk == c.mediumChapterName):null;
+          if(mediumChap!=null){
+            const smallKey = Object.keys(this.sortedChapterNameList[largeChap][mediumChap]);
+            const smallChap = smallKey!=null?smallKey.find(sk => sk == c.smallChapterName):null;
+            if(smallChap!=null){
+              this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName].push(c.topicChapterName);
+            }
+            else{
+              this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName] = [];
+              this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName].push(c.topicChapterName);
+            }
+          }
+          else{
+            this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName] = {};
+            this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName] = [];
+            this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName].push(c.topicChapterName);
+          }
+        }else{
+          this.sortedChapterNameList[c.largeChapterName] = {};
+          this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName] = {};
+          this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName] = [];
+          this.sortedChapterNameList[c.largeChapterName][c.mediumChapterName][c.smallChapterName].push(c.topicChapterName);
+        }
+      })
+      console.log(this.sortedChapterNameList);
+    },
+    quizNumSet(){
+      const inputsum = this.lowest+this.low+this.middle+this.high+this.highest;
+
+      if(this.quizsum==inputsum){
+        // 이건 나중에 생각해볼게
       }
-
-      depBtn.on('click', depFunc);
-
-
-      // que-checkbox
-      let queChkAll = $('.que-allCheck');
-
-      function queCheckFunc() {
-        let _this = $(this);
-
-        if (_this.prop('checked')) {
-          _this.parents().next('ul').find('input[type=checkbox]').prop('checked', true);
-        } else {
-          _this.parents().next('ul').find('input[type=checkbox]').prop('checked', false);
-        }
-
-        if (_this.prop('checked') && _this.hasClass('depth01')) {
-          _this.parents('.check-group').next('div').find('input[type=checkbox]').prop('checked', true);
-        } else {
-          _this.parents('.check-group').next('div').find('input[type=checkbox]').prop('checked', false);
-        }
-
-        if (_this.prop('checked')) {
-          _this.parents('table').find('input[type=checkbox]').prop('checked', true);
-        } else {
-          _this.parents('table').find('input[type=checkbox]').prop('checked', false);
-        }
-
-      }
-
-      queChkAll.on('click', queCheckFunc);
-
-
-      $(".type-box .box .range").hide();
-      let stepBtn = $('.step-wrap .btn-line');
-
-      function stepFunc() {
-        let _this = $(this);
-        let stepData = _this.data('step');
-
-        _this.toggleClass('active');
-
-        if (_this.hasClass('active')) {
-          $(".range[data-step='" + stepData + "']").show();
-        } else {
-          $(".range[data-step='" + stepData + "']").hide();
-        }
-
-      }
-      stepBtn.on('click', stepFunc);
-    })
+    }
   },
   mounted(){
-    this.jquery;
-    common();
+    this.getChapter();
+    this.$nextTick(()=>{
+      this.jquery();
+      common();
+    })
+  },
+  updated(){
+    this.$nextTick(()=>{
+      this.jquery();
+      common();
+    })
   }
 }
 
@@ -100,6 +174,7 @@ export default {
             <div class="paper-info">
               <span>국어 1-1</span>
               노미숙(2015)
+              <p v-if="chapterList.length>0">{{ chapterList[0].subjectName }}</p>
             </div>
           </div>
           <div class="view-bottom">
@@ -113,86 +188,44 @@ export default {
                       <label for="chk01_00">전체선택</label>
                     </div>
                     <ul>
-                      <li>
+                      <li v-for="(large, lindex) in Object.keys(sortedChapterNameList)">
                         <div class="check-group title">
                           <div class="title-chk">
-                            <input type="checkbox" id="chk01_01" class="que-allCheck depth01">
-                            <label for="chk01_01">
-                              <button type="button" class="dep-btn active">1. 새로운 시작</button>
+                            <input type="checkbox" :id="'chk'+lindex" class="que-allCheck depth01">
+                            <label :for="'chk'+lindex">
+                              <button type="button" class="dep-btn active">{{ large }}</button>
                             </label>
                           </div>
                         </div>
                         <div class="depth02">
-                          <div class="check-group">
-                            <input type="checkbox" id="chk01_02" class="que-allCheck depth01">
-                            <label for="chk01_02">
-                              <button type="button" class="dep-btn active">(1) 시의 아름다움</button>
-                            </label>
-                          </div>
-                          <div class="depth03">
+                          <template v-for="(medium, mindex) in Object.keys(sortedChapterNameList[large])">
                             <div class="check-group">
-                              <input type="checkbox" id="chk01_03" class="que-allCheck depth01">
-                              <label for="chk01_03">
-                                <button type="button" class="dep-btn active">[1] 소주제</button>
+                              <input type="checkbox" :id="'chk'+lindex+'_'+mindex" class="que-allCheck depth01">
+                              <label :for="'chk'+lindex+'_'+mindex">
+                                <button type="button" class="dep-btn active">{{ medium }}</button>
                               </label>
                             </div>
-                            <div class="depth04">
-                              <div class="check-group">
-                                <input type="checkbox" id="chk01_04" class="que-allCheck depth01">
-                                <label for="chk01_04">
-                                  <button type="button" class="dep-btn active">거듭제곱</button>
-                                </label>
-                              </div>
-                              <div class="depth05">
+                            <div class="depth03">
+                              <template v-for="(small, sindex) in Object.keys(sortedChapterNameList[large][medium])">
                                 <div class="check-group">
-                                  <input type="checkbox" id="chk01_05">
-                                  <label for="chk01_05">
-                                    <span>거듭제곱으로 표현</span>
+                                  <input type="checkbox" :id="'chk'+lindex+'_'+mindex+'_'+sindex" class="que-allCheck depth01">
+                                  <label :for="'chk'+lindex+'_'+mindex+'_'+sindex">
+                                    <button type="button" class="dep-btn active">{{ small }}</button>
                                   </label>
                                 </div>
-                              </div>
-                              <div class="check-group">
-                                <input type="checkbox" id="chk01_06">
-                                <label for="chk01_06">
-                                  <span>소수와 합성수</span>
-                                </label>
-                              </div>
-                              <div class="check-group">
-                                <input type="checkbox" id="chk01_07">
-                                <label for="chk01_07">
-                                  <span>소인수분해</span>
-                                </label>
-                              </div>
-                              <div class="check-group">
-                                <input type="checkbox" id="chk01_08">
-                                <label for="chk01_08">
-                                  <span>소인수분해를 이용하여 약수 구하기</span>
-                                </label>
-                              </div>
-                              <div class="check-group">
-                                <input type="checkbox" id="chk01_09">
-                                <label for="chk01_09">
-                                  <span>최대공약수와 최소공배수</span>
-                                </label>
-                              </div>
+                                <div class="depth04">
+                                  <template v-for="(topic, tindex) in sortedChapterNameList[large][medium][small]">
+                                    <div class="check-group">
+                                      <input type="checkbox" :id="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex" class="que-allCheck depth01">
+                                      <label :for="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex">
+                                        <button type="button" class="dep-btn active">{{ topic }}</button>
+                                      </label>
+                                    </div>
+                                  </template>
+                                </div>
+                              </template>
                             </div>
-                          </div>
-                          <div class="check-group">
-                            <input type="checkbox" id="chk01_10">
-                            <label for="chk01_10">
-                              <span>(2) 산문의 향기</span>
-                            </label>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="check-group title">
-                          <div class="title-chk">
-                            <input type="checkbox" id="chk02_01" class="que-allCheck depth01">
-                            <label for="chk02_01">
-                              <button type="button" class="dep-btn">2. 세상과 함께 자라는 꿈 </button>
-                            </label>
-                          </div>
+                          </template>
                         </div>
                       </li>
                     </ul>
@@ -210,14 +243,14 @@ export default {
                     </div>
                     <div class="count-area">
                       <div class="btn-wrap">
-                        <button type="button" class="btn-line">10</button>
-                        <button type="button" class="btn-line">15</button>
-                        <button type="button" class="btn-line">20</button>
-                        <button type="button" class="btn-line">25</button>
-                        <button type="button" class="btn-line active">30</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">10</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">15</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">20</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">25</button>
+                        <button type="button" class="btn-line active" @click="quizNum=$event.target.innerText">30</button>
                       </div>
                       <div class="input-area">
-                        <span class="num">총 <input type="text" value="30"> 문제</span>
+                        <span class="num">총 <input type="text" v-model.number="quizNum"> 문제</span>
                         <div class="txt">*5의 배수로 입력해주세요. </div>
                       </div>
 
@@ -300,7 +333,7 @@ export default {
 
       </div>
       <div class="step-btn-wrap">
-        <button type="button" class="btn-step">출제 방법 선택</button>
+        <button type="button" class="btn-step" @click="$router.push('/sub01')">출제 방법 선택</button>
         <button type="button" class="btn-step next pop-btn" data-pop="que-pop">STEP2 문항 편집</button><!-- 230629 pop-btn 추가-->
       </div>
 
@@ -321,27 +354,27 @@ export default {
             <!-- S: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
             <div class="range color01 fail">
               <span class="color01">최하</span>
-              <input type="number">
+              <input type="number" v-model.number="lowest">
             </div>
             <div class="range color02">
               <span class="color02">하</span>
-              <input type="number">
+              <input type="number" v-model.number="low">
             </div>
             <div class="range color03">
               <span class="color03">중</span>
-              <input type="number">
+              <input type="number" v-model.number="middle">
             </div>
             <div class="range color04">
               <span class="color04">상</span>
-              <input type="number">
+              <input type="number" v-model.number="high">
             </div>
             <div class="range color05">
               <span class="color05">최상</span>
-              <input type="number">
+              <input type="number" v-model.number="highest">
             </div>
             <div class="range total fail">
               <span>합계</span>
-              <span class="num">20</span>
+              <span class="num">{{ quizsum }}</span>
             </div>
             <!-- E: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
           </div>
