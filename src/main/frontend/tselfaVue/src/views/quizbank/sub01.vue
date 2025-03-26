@@ -1,4 +1,6 @@
 <script>
+import { common } from '../../assets/js/common.js'
+
 export default {
   name: "sub01.vue",
   data:()=>{
@@ -19,6 +21,7 @@ export default {
   },
   mounted(){
     this.getChapter();
+    common();
   }
 }
 </script>
@@ -45,13 +48,13 @@ export default {
             </div>
           </div>
           <div> <!-- test -->
-            <div v-for="chapter in chapterList">
-              <!-- 이걸 봤을 때 이 3개로 묶어야 할 듯 -->
-              <p>{{ chapter.largeChapterName }}</p>
-              <p>{{ chapter.mediumChapterName }}</p>
-              <p>{{ chapter.smallChapterName }}</p>
-              <p>비우는칸</p>
-            </div>
+<!--            <div v-for="chapter in chapterList">-->
+<!--              &lt;!&ndash; 이걸 봤을 때 이 3개로 묶어야 할 듯 &ndash;&gt;-->
+<!--              <p>{{ chapter.largeChapterName }}</p>-->
+<!--              <p>{{ chapter.mediumChapterName }}</p>-->
+<!--              <p>{{ chapter.smallChapterName }}</p>-->
+<!--              <p>비우는칸</p>-->
+<!--            </div>-->
           </div>
           <div class="view-bottom">
             <div class="tab-list-type01 unit-acc-wrap">
