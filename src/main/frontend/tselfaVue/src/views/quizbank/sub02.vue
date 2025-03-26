@@ -175,36 +175,36 @@ export default {
                       <label for="chk01_00">전체선택</label>
                     </div>
                     <ul>
-                      <li v-for="large in Object.keys(sortedChapterNameList)">
+                      <li v-for="(large, lindex) in Object.keys(sortedChapterNameList)">
                         <div class="check-group title">
                           <div class="title-chk">
-                            <input type="checkbox" id="chk01_01" class="que-allCheck depth01">
-                            <label for="chk01_01">
+                            <input type="checkbox" :id="'chk'+lindex" class="que-allCheck depth01">
+                            <label :for="'chk'+lindex">
                               <button type="button" class="dep-btn active">{{ large }}</button>
                             </label>
                           </div>
                         </div>
                         <div class="depth02">
-                          <template v-for="medium in Object.keys(sortedChapterNameList[large])">
+                          <template v-for="(medium, mindex) in Object.keys(sortedChapterNameList[large])">
                             <div class="check-group">
-                              <input type="checkbox" id="chk01_02" class="que-allCheck depth01">
-                              <label for="chk01_02">
+                              <input type="checkbox" :id="'chk'+lindex+'_'+mindex" class="que-allCheck depth01">
+                              <label :for="'chk'+lindex+'_'+mindex">
                                 <button type="button" class="dep-btn active">{{ medium }}</button>
                               </label>
                             </div>
                             <div class="depth03">
-                              <template v-for="small in Object.keys(sortedChapterNameList[large][medium])">
+                              <template v-for="(small, sindex) in Object.keys(sortedChapterNameList[large][medium])">
                                 <div class="check-group">
-                                  <input type="checkbox" id="chk01_03" class="que-allCheck depth01">
-                                  <label for="chk01_03">
+                                  <input type="checkbox" :id="'chk'+lindex+'_'+mindex+'_'+sindex" class="que-allCheck depth01">
+                                  <label :for="'chk'+lindex+'_'+mindex+'_'+sindex">
                                     <button type="button" class="dep-btn active">{{ small }}</button>
                                   </label>
                                 </div>
                                 <div class="depth04">
-                                  <template v-for="topic in sortedChapterNameList[large][medium][small]">
+                                  <template v-for="(topic, tindex) in sortedChapterNameList[large][medium][small]">
                                     <div class="check-group">
-                                      <input type="checkbox" id="chk01_04" class="que-allCheck depth01">
-                                      <label for="chk01_04">
+                                      <input type="checkbox" :id="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex" class="que-allCheck depth01">
+                                      <label :for="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex">
                                         <button type="button" class="dep-btn active">{{ topic }}</button>
                                       </label>
                                     </div>
