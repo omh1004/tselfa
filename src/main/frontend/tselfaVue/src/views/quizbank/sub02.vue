@@ -1,8 +1,83 @@
 <script>
+import { common } from '../../assets/js/common.js'
+
 export default {
   name: "sub02.vue",
   methods:{
     // jquery가 많이 들어있어 일단 보류
+    jquery:$(function () {
+      // depth
+      let depBtn = $('.dep-btn');
+
+      function depFunc() {
+        let _this = $(this);
+
+        if (!_this.hasClass('active')) {
+          _this.addClass('active');
+          _this.parents('.check-group').next('div').stop().slideUp('fast');
+
+        } else {
+          _this.removeClass('active');
+          _this.parents('.check-group').next('div').stop().slideDown('fast');
+        }
+
+        _this.parents('.check-group').toggleClass('on');
+      }
+
+      depBtn.on('click', depFunc);
+
+
+      // que-checkbox
+      let queChkAll = $('.que-allCheck');
+
+      function queCheckFunc() {
+        let _this = $(this);
+
+        if (_this.prop('checked')) {
+          _this.parents().next('ul').find('input[type=checkbox]').prop('checked', true);
+        } else {
+          _this.parents().next('ul').find('input[type=checkbox]').prop('checked', false);
+        }
+
+        if (_this.prop('checked') && _this.hasClass('depth01')) {
+          _this.parents('.check-group').next('div').find('input[type=checkbox]').prop('checked', true);
+        } else {
+          _this.parents('.check-group').next('div').find('input[type=checkbox]').prop('checked', false);
+        }
+
+        if (_this.prop('checked')) {
+          _this.parents('table').find('input[type=checkbox]').prop('checked', true);
+        } else {
+          _this.parents('table').find('input[type=checkbox]').prop('checked', false);
+        }
+
+      }
+
+      queChkAll.on('click', queCheckFunc);
+
+
+      $(".type-box .box .range").hide();
+      let stepBtn = $('.step-wrap .btn-line');
+
+      function stepFunc() {
+        let _this = $(this);
+        let stepData = _this.data('step');
+
+        _this.toggleClass('active');
+
+        if (_this.hasClass('active')) {
+          $(".range[data-step='" + stepData + "']").show();
+        } else {
+          $(".range[data-step='" + stepData + "']").hide();
+        }
+
+      }
+      stepBtn.on('click', stepFunc);
+    })
+  },
+  mounted(){
+    this.jquery;
+    common();
   }
 }
 

@@ -1,6 +1,74 @@
 <script>
+import { common } from '../../assets/js/common.js'
+
 export default {
-  name: "sub03_02_01.vue"
+  name: "sub03_02_01.vue",
+  methods:{
+    jquery:$(function () {
+
+
+      let _leg = $('.view-que').length;
+      let arr = [];
+
+      viewListFunc();
+
+      $(".view-que-list").change(function () {
+        let _leg = $('.view-que').length;
+        let arr = [];
+
+        viewListFunc();
+      })
+
+      function viewListFunc() {
+        $('.col').on('click', function () {
+
+          let _idx = $(this).index();
+
+          for (var i = 0; i < _leg; i++) {
+            arr.push($('.view-que').eq(i).offset().top - 280);
+          }
+
+          console.log(arr);
+
+          $('.view-que-list').animate({
+            scrollTop: arr[_idx]
+          }, 400);
+
+          let _this = $(this);
+          if (!_this.hasClass('active')) {
+            _this.parents('.test.ui-sortable').find('.col').removeClass('active');
+            _this.addClass('active');
+            $('.view-que-box').removeClass('active');
+            $('.view-que-box').eq(_idx).addClass('active');
+          };
+
+        })
+      }
+
+
+
+      // $( "#table-1" ).sortable({
+      //   handle: '.dragHandle',
+
+      //   start: function(event, ui) {
+      //     position = ui.placeholder.index() - 1;
+      //     cnt = $('.view-que').eq(position);
+      //   },
+      //   change: function(event, ui) {
+      //     _idx = _idx = Number($(".ui-sortable > div:not(.ui-sortable-helper)").index(ui.placeholder));
+
+      //     cnt.before($('.view-que').eq(_idx));
+
+      //     console.log($('.view-que').eq(_idx))
+      //   }
+      // });
+      // $( "#table-1" ).disableSelection();
+    })
+  },
+  mounted(){
+    this.jquery;
+    common();
+  }
 }
 </script>
 

@@ -1,6 +1,10 @@
 <script>
+import { common } from '../../assets/js/common.js'
 export default {
-  name: "sub04_01.vue"
+  name: "sub04_01.vue",
+  mounted(){
+    common();
+  }
 }
 </script>
 

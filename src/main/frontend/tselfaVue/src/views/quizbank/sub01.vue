@@ -41,6 +41,8 @@ export default {
             <div class="paper-info">
               <span>수학 1</span>
               이준열(2015) 수정
+              ..... <!-- 더미와 API 데이터 구분용 -->
+              {{ chapterList[0].subjectName }}
             </div>
             <div class="btn-wrap">
               <button class="btn-icon"><i class="edit"></i>선택한 시험지 편집하기</button>

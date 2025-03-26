@@ -1,6 +1,55 @@
 <script>
+import { common } from '../../assets/js/common.js'
+
 export default {
-  name: "sub03_01_01.vue"
+  name: "sub03_01_01.vue",
+  methods:{
+    jquery:$(function () {
+
+
+      let _leg = $('.view-que').length;
+      let arr = [];
+
+      viewListFunc();
+
+      $(".view-que-list").change(function () {
+        let _leg = $('.view-que').length;
+        let arr = [];
+
+        viewListFunc();
+      })
+
+      function viewListFunc() {
+        $('.col').on('click', function () {
+
+          let _idx = $(this).index();
+
+          for (var i = 0; i < _leg; i++) {
+            arr.push($('.view-que').eq(i).offset().top - 270);
+          }
+
+          console.log(arr);
+
+          $('.view-que-list').animate({
+            scrollTop: arr[_idx]
+          }, 400);
+
+          let _this = $(this);
+          if (!_this.hasClass('active')) {
+            _this.parents('.test.ui-sortable').find('.col').removeClass('active');
+            _this.addClass('active');
+            $('.view-que-box').removeClass('active');
+            $('.view-que-box').eq(_idx).addClass('active');
+          };
+
+        })
+      }
+    })
+  },
+  mounted(){
+    this.jquery;
+    common();
+  }
 }
 </script>
 
