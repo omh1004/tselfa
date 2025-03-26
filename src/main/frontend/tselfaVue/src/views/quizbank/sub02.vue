@@ -7,6 +7,7 @@ export default {
     return{
       chapterList:[],
       sortedChapterNameList:{},
+      quizNum:30,
     }
   },
   methods:{
@@ -229,14 +230,14 @@ export default {
                     </div>
                     <div class="count-area">
                       <div class="btn-wrap">
-                        <button type="button" class="btn-line">10</button>
-                        <button type="button" class="btn-line">15</button>
-                        <button type="button" class="btn-line">20</button>
-                        <button type="button" class="btn-line">25</button>
-                        <button type="button" class="btn-line active">30</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">10</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">15</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">20</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">25</button>
+                        <button type="button" class="btn-line active" @click="quizNum=$event.target.innerText">30</button>
                       </div>
                       <div class="input-area">
-                        <span class="num">총 <input type="text" value="30"> 문제</span>
+                        <span class="num">총 <input type="text" v-model.number="quizNum"> 문제</span>
                         <div class="txt">*5의 배수로 입력해주세요. </div>
                       </div>
 
