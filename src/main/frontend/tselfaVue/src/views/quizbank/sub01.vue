@@ -83,7 +83,7 @@ export default {
             </div>
             <div class="btn-wrap">
               <button class="btn-icon"><i class="edit"></i>선택한 시험지 편집하기</button>
-              <button class="btn-icon"><i class="newpaper"></i>신규 시험지 만들기</button>
+              <button class="btn-icon" @click="$router.push('/sub02')"><i class="newpaper"></i>신규 시험지 만들기</button>
             </div>
           </div>
           <div> <!-- test -->
