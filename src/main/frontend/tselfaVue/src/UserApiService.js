@@ -1,5 +1,5 @@
 // API 기본 URL
-const API_URL = 'http://localhost:9090/api';
+const API_URL = 'http://localhost:8080/api';
 
 // Fetch 요청에 공통적으로 사용될 헤더와 옵션
 const headers = {
