@@ -7,6 +7,7 @@ export default {
     return{
       chapterList:[],
       sortedChapterNameList:{},
+      evaluationList:[],
       quizNum:30,
       lowest:0,
       low:0,
@@ -14,7 +15,7 @@ export default {
       high:0,
       highest:0,
       quizsum:20,
-      addEvent:false,
+      addEvent:true,
       activeList:{
         teaactive:false,
         stuactive:false,
@@ -47,10 +48,11 @@ export default {
           if (!_this.hasClass('active')) {
             _this.addClass('active');
             _this.parents('.check-group').next('div').stop().slideUp('fast');
-
+            console.log("작동하면 외쳐!");
           } else {
             _this.removeClass('active');
             _this.parents('.check-group').next('div').stop().slideDown('fast');
+            console.log("작동하면 외치라고!");
           }
 
           _this.parents('.check-group').toggleClass('on');
@@ -159,6 +161,7 @@ export default {
             console.log(this.chapterList);
             this.sortChapter();
           });
+      console.log("chapter의 끝");
     },
     sortChapter(){
       this.chapterList.forEach(c=>{
@@ -191,6 +194,8 @@ export default {
         }
       })
       console.log(this.sortedChapterNameList);
+      console.log("sortChapter의 끝");
+      this.addEvent=false;
     },
     quizNumSet(){
       const inputsum = this.lowest+this.low+this.middle+this.high+this.highest;
@@ -205,20 +210,38 @@ export default {
         console.log(getTopic);
         // fetch 써야 함? 기능 만들기 귀찮은데
         // 개발중 사용금지
-        // fetch('http://localhost:8080/api/itemlist')
-        //     .then(response=>response.json())
-        //     .then(data=>console.log(data));
+        fetch('http://localhost:8080/api/itemlist',{
+
+        }).then(response=>response.json())
+            .then(data=>console.log(data));
       });
+    },
+    getEvaluation(){
+      fetch('http://localhost:8080/api/evaluationlist')
+          .then(response=>response.json())
+          .then(data=>{
+            for(let i=0;i<data.evaluationList.length;i+=3){
+              this.evaluationList.push(data.evaluationList.slice(i,i+3));
+            }
+            console.log("data",data);
+            console.log("evalu",this.evaluationList);
+            console.log("evaluation의 끝");
+          });
     },
   },
   mounted(){
     this.getChapter();
-    common();
+    this.getEvaluation();
+    this.$nextTick(() => {
+      console.log("뭐가 먼저 됨?");
+    })
   },
   updated(){
     if(!this.addEvent){
       this.$nextTick(() => {
+        common();
         this.jquery();
+        console.log("이거 된거임?")
       })
       this.addEvent=true;
     }
@@ -343,14 +366,9 @@ export default {
                       <div class="right-area">
                       </div>
                     </div>
-                    <div class="btn-wrap multi">
-                      <button type="button" class="btn-line" :class="{active:activeList.dataactive}">자료 해석</button>
-                      <button type="button" class="btn-line" :class="{active:activeList.underactive}">이해</button>
-                      <button type="button" class="btn-line" :class="{active:activeList.applyactive}">적용</button>
-                    </div>
-                    <div class="btn-wrap multi">
-                      <button type="button" class="btn-line" :class="{active:activeList.knowactive}">지식</button>
-                      <button type="button" class="btn-line" :class="{active:activeList.concactive}">결론도출</button>
+                    <div class="btn-wrap multi" v-for="evalGroup in evaluationList">
+                      <button type="button" :id="evalu.domainId" class="btn-line" :class="{active:activeList.dataactive}"
+                            v-for="evalu in evalGroup">{{ evalu.domainName }}</button>
                     </div>
                   </div>
                   <div class="box">
