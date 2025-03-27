@@ -20,6 +20,9 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/about">소개</router-link>
             </li>
+            <li class="nav-item">
+              <a href="#" @click="popup">T셀파</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -39,7 +42,12 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  methods:{
+    popup(){
+      window.open('http://localhost:3000/sub01','_blank','width=1600,height=900')
+    }
+  }
 }
 </script>
 

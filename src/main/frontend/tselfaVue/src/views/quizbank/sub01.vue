@@ -52,6 +52,13 @@ export default {
         }
       })
       console.log(this.sortedChapterNameList);
+    },
+    popupClose(){
+      if(window.opener){
+        window.close();
+      }else{
+        alert("창을 닫을 수 없습니다!");
+      }
     }
   },
   mounted(){
@@ -71,7 +78,7 @@ export default {
         <ul class="title">
           <li class="active"><img src="../../assets/image/ico_step_active.png" alt="">출제 방법 선택</li>
         </ul>
-        <button type="button" class="del-btn"></button>
+        <button type="button" class="del-btn" @click="popupClose"></button>
       </div>
       <div class="pop-content">
         <div class="view-box">
