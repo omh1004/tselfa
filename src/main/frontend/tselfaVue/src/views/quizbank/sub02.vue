@@ -14,11 +14,29 @@ export default {
       high:0,
       highest:0,
       quizsum:20,
+      addEvent:false,
+      activeList:{
+        teaactive:false,
+        stuactive:false,
+        dataactive:false,
+        underactive:false,
+        applyactive:false,
+        knowactive:false,
+        concactive:false,
+        objectiveactive:false,
+        subjectiveactive:false,
+        lowestactive:false,
+        lowactive:false,
+        middleactive:false,
+        highactive:false,
+        highestactive:false,
+      },
     }
   },
   methods:{
     // jquery가 많이 들어있어 일단 보류
     jquery() {
+      const vm = this;
       $(function () {
         // depth
         let depBtn = $('.dep-btn');
@@ -49,8 +67,35 @@ export default {
 
           if (_this.prop('checked')) {
             _this.parents().next('ul').find('input[type=checkbox]').prop('checked', true);
+            vm.activeList.teaactive=true;
+            vm.activeList.stuactive=true;
+            vm.activeList.dataactive=true;
+            vm.activeList.underactive=true;
+            vm.activeList.applyactive=true;
+            vm.activeList.knowactive=true;
+            vm.activeList.concactive=true;
+            vm.activeList.objectiveactive=true;
+            vm.activeList.subjectiveactive=true;
+            vm.activeList.lowestactive=true;
+            vm.activeList.lowactive=true;
+            vm.activeList.middleactive=true;
+            vm.activeList.highactive=true;
+            vm.activeList.highestactive=true;
           } else {
             _this.parents().next('ul').find('input[type=checkbox]').prop('checked', false);
+            vm.activeList.teaactive=false;
+            vm.activeList.stuactive=false;
+            vm.activeList.underactive=false;
+            vm.activeList.applyactive=false;
+            vm.activeList.knowactive=false;
+            vm.activeList.concactive=false;
+            vm.activeList.objectiveactive=false;
+            vm.activeList.subjectiveactive=false;
+            vm.activeList.lowestactive=false;
+            vm.activeList.lowactive=false;
+            vm.activeList.middleactive=false;
+            vm.activeList.highactive=false;
+            vm.activeList.highestactive=false;
           }
 
           if (_this.prop('checked') && _this.hasClass('depth01')) {
@@ -70,7 +115,9 @@ export default {
         queChkAll.on('click', queCheckFunc);
 
 
-        $(".type-box .box .range").hide();
+        // $(".type-box .box .range").hide();
+        $(".pop-content .range-wrap .range").hide();
+        $(".pop-content .range-wrap .range.total").show();
         let stepBtn = $('.step-wrap .btn-line');
 
         function stepFunc() {
@@ -142,16 +189,15 @@ export default {
   },
   mounted(){
     this.getChapter();
-    this.$nextTick(()=>{
-      this.jquery();
-      common();
-    })
+    common();
   },
   updated(){
-    this.$nextTick(()=>{
-      this.jquery();
-      common();
-    })
+    if(!this.addEvent){
+      this.$nextTick(() => {
+        this.jquery();
+      })
+      this.addEvent=true;
+    }
   }
 }
 
@@ -216,9 +262,9 @@ export default {
                                 <div class="depth04">
                                   <template v-for="(topic, tindex) in sortedChapterNameList[large][medium][small]">
                                     <div class="check-group">
-                                      <input type="checkbox" :id="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex" class="que-allCheck depth01">
+                                      <input type="checkbox" :id="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex">
                                       <label :for="'chk'+lindex+'_'+mindex+'_'+sindex+'_'+tindex">
-                                        <button type="button" class="dep-btn active">{{ topic }}</button>
+                                        <span>{{ topic }}</span>
                                       </label>
                                     </div>
                                   </template>
@@ -263,8 +309,8 @@ export default {
                       </div>
                     </div>
                     <div class="btn-wrap multi">
-                      <button type="button" class="btn-line">교사용(교사용 DVD, 지도서, 신규 개발 등)</button>
-                      <button type="button" class="btn-line">학생용(자습서, 평가문제집 등)</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.teaactive}">교사용(교사용 DVD, 지도서, 신규 개발 등)</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.stuactive}">학생용(자습서, 평가문제집 등)</button>
                     </div>
                   </div>
                   <div class="box">
@@ -274,13 +320,13 @@ export default {
                       </div>
                     </div>
                     <div class="btn-wrap multi">
-                      <button type="button" class="btn-line">자료 해석</button>
-                      <button type="button" class="btn-line">이해</button>
-                      <button type="button" class="btn-line">적용</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.dataactive}">자료 해석</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.underactive}">이해</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.applyactive}">적용</button>
                     </div>
                     <div class="btn-wrap multi">
-                      <button type="button" class="btn-line">지식</button>
-                      <button type="button" class="btn-line">결론도출</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.knowactive}">지식</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.concactive}">결론도출</button>
                     </div>
                   </div>
                   <div class="box">
@@ -290,8 +336,8 @@ export default {
                       </div>
                     </div>
                     <div class="btn-wrap multi">
-                      <button type="button" class="btn-line">객관식</button>
-                      <button type="button" class="btn-line">주관식</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.objectiveactive}">객관식</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.subjectiveactive}">주관식</button>
                     </div>
                   </div>
                   <div class="box">
@@ -299,11 +345,11 @@ export default {
                       <span class="tit-text">난이도 구성</span>
                     </div>
                     <div class="step-wrap">
-                      <button type="button" class="btn-line type02 color01" data-step="stap1">최하</button>
-                      <button type="button" class="btn-line type02 color02" data-step="stap2">하</button>
-                      <button type="button" class="btn-line type02 color03" data-step="stap3">중</button>
-                      <button type="button" class="btn-line type02 color04" data-step="stap4">상</button>
-                      <button type="button" class="btn-line type02 color05" data-step="stap5">최상</button>
+                      <button type="button" class="btn-line type02 color01" data-step="stap1" :class="{active:activeList.lowestactive}">최하</button>
+                      <button type="button" class="btn-line type02 color02" data-step="stap2" :class="{active:activeList.lowactive}">하</button>
+                      <button type="button" class="btn-line type02 color03" data-step="stap3" :class="{active:activeList.middleactive}">중</button>
+                      <button type="button" class="btn-line type02 color04" data-step="stap4" :class="{active:activeList.highactive}">상</button>
+                      <button type="button" class="btn-line type02 color05" data-step="stap5" :class="{active:activeList.highestactive}">최상</button>
                     </div>
                   </div>
                   <div class="box">
@@ -352,23 +398,23 @@ export default {
           <span class="txt">문제 수를 입력하여<br> 난이도별 문제 수를 조정하세요.</span>
           <div class="range-wrap">
             <!-- S: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
-            <div class="range color01 fail">
+            <div class="range color01 fail" data-step="stap1">
               <span class="color01">최하</span>
               <input type="number" v-model.number="lowest">
             </div>
-            <div class="range color02">
+            <div class="range color02" data-step="stap2">
               <span class="color02">하</span>
               <input type="number" v-model.number="low">
             </div>
-            <div class="range color03">
+            <div class="range color03" data-step="stap3">
               <span class="color03">중</span>
               <input type="number" v-model.number="middle">
             </div>
-            <div class="range color04">
+            <div class="range color04" data-step="stap4">
               <span class="color04">상</span>
               <input type="number" v-model.number="high">
             </div>
-            <div class="range color05">
+            <div class="range color05" data-step="stap5">
               <span class="color05">최상</span>
               <input type="number" v-model.number="highest">
             </div>
@@ -396,23 +442,23 @@ export default {
         <div class="pop-content">
           <span class="txt">사용자가 원하는 문항 구성을 할 수 없어<br>문항 구성이 자동으로 변경되었습니다.</span>
           <div class="range-wrap">
-            <div class="range">
+            <div class="range" data-step="stap1">
               <span class="color01">최하</span>
               <span class="num">2</span>
             </div>
-            <div class="range">
+            <div class="range" data-step="stap2">
               <span class="color02">하</span>
               <span class="num">5</span>
             </div>
-            <div class="range">
+            <div class="range" data-step="stap3">
               <span class="color03">중</span>
               <span class="num">6</span>
             </div>
-            <div class="range">
+            <div class="range" data-step="stap4">
               <span class="color04">상</span>
               <span class="num">5</span>
             </div>
-            <div class="range">
+            <div class="range" data-step="stap5">
               <span class="color05">최상</span>
               <span class="num">2</span>
             </div>
