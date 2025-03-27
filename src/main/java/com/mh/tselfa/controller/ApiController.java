@@ -54,4 +54,41 @@ public class ApiController {
         }
         return ResponseEntity.ok().body(response);
     }
+
+    // 개발중...
+    @GetMapping("/itemlist")
+    public ResponseEntity<Object> itemList(){
+        String response = "";
+        try{
+            URL url = new URL("https://tsherpa.item-factory.com/item-img/chapters/item-list");
+            HttpsURLConnection connect = (HttpsURLConnection)url.openConnection();
+
+            connect.setRequestMethod("POST");
+            connect.setDoOutput(true);
+            connect.setRequestProperty("Content-Type", "application/json");
+
+            Map<String, String> params = Map.of("subjectId","1136");    // 이거 바꿔야됨
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(params);
+            byte[] input = json.getBytes();
+            connect.getOutputStream().write(input);
+
+            InputStream is = connect.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            int data = 0;
+            StringBuilder sb = new StringBuilder();
+            while((data=isr.read())!=-1){
+                sb.append((char)data);
+            }
+            response = sb.toString();
+        }catch(MalformedURLException e) {
+            log.error("URL이 잘못되었습니다 : " + e.getMessage());
+        }catch(IOException e){
+            log.error("Connection 에러 : " + e.getMessage());
+        }finally{
+            log.debug("해치웠나?");
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 }

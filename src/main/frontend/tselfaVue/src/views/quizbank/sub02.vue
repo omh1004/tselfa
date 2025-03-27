@@ -65,8 +65,9 @@ export default {
         function queCheckFunc() {
           let _this = $(this);
 
-          if (_this.prop('checked')) {
-            _this.parents().next('ul').find('input[type=checkbox]').prop('checked', true);
+          let checkedbox = $('.unit-cnt>ul').find('input[type=checkbox]:checked');
+
+          if(checkedbox.length<=1){
             vm.activeList.teaactive=true;
             vm.activeList.stuactive=true;
             vm.activeList.dataactive=true;
@@ -81,21 +82,13 @@ export default {
             vm.activeList.middleactive=true;
             vm.activeList.highactive=true;
             vm.activeList.highestactive=true;
+            $(".range-wrap .range").show();
+          }
+
+          if (_this.prop('checked')) {
+            _this.parents().next('ul').find('input[type=checkbox]').prop('checked', true);
           } else {
             _this.parents().next('ul').find('input[type=checkbox]').prop('checked', false);
-            vm.activeList.teaactive=false;
-            vm.activeList.stuactive=false;
-            vm.activeList.underactive=false;
-            vm.activeList.applyactive=false;
-            vm.activeList.knowactive=false;
-            vm.activeList.concactive=false;
-            vm.activeList.objectiveactive=false;
-            vm.activeList.subjectiveactive=false;
-            vm.activeList.lowestactive=false;
-            vm.activeList.lowactive=false;
-            vm.activeList.middleactive=false;
-            vm.activeList.highactive=false;
-            vm.activeList.highestactive=false;
           }
 
           if (_this.prop('checked') && _this.hasClass('depth01')) {
@@ -110,6 +103,26 @@ export default {
             _this.parents('table').find('input[type=checkbox]').prop('checked', false);
           }
 
+          checkedbox = $('.unit-cnt>ul').find('input[type=checkbox]:checked');
+
+          if(checkedbox.length<=1){
+            vm.activeList.teaactive=false;
+            vm.activeList.stuactive=false;
+            vm.activeList.dataactive=false;
+            vm.activeList.underactive=false;
+            vm.activeList.applyactive=false;
+            vm.activeList.knowactive=false;
+            vm.activeList.concactive=false;
+            vm.activeList.objectiveactive=false;
+            vm.activeList.subjectiveactive=false;
+            vm.activeList.lowestactive=false;
+            vm.activeList.lowactive=false;
+            vm.activeList.middleactive=false;
+            vm.activeList.highactive=false;
+            vm.activeList.highestactive=false;
+            $(".range-wrap .range").hide();
+            $(".range-wrap .range.total").show();
+          }
         }
 
         queChkAll.on('click', queCheckFunc);
@@ -185,7 +198,18 @@ export default {
       if(this.quizsum==inputsum){
         // 이건 나중에 생각해볼게
       }
-    }
+    },
+    editQuiz(){
+      $(".depth04 input[type=checkbox]:checked").next("label").children("span").toArray().forEach(span=>{
+        const getTopic = this.chapterList.find(chapter=>chapter.topicChapterName==span.innerText);
+        console.log(getTopic);
+        // fetch 써야 함? 기능 만들기 귀찮은데
+        // 개발중 사용금지
+        // fetch('http://localhost:8080/api/itemlist')
+        //     .then(response=>response.json())
+        //     .then(data=>console.log(data));
+      });
+    },
   },
   mounted(){
     this.getChapter();
@@ -380,7 +404,7 @@ export default {
       </div>
       <div class="step-btn-wrap">
         <button type="button" class="btn-step" @click="$router.push('/sub01')">출제 방법 선택</button>
-        <button type="button" class="btn-step next pop-btn" data-pop="que-pop">STEP2 문항 편집</button><!-- 230629 pop-btn 추가-->
+        <button type="button" class="btn-step next pop-btn" data-pop="que-pop" @click="editQuiz">STEP2 문항 편집</button><!-- 230629 pop-btn 추가-->
       </div>
 
 
