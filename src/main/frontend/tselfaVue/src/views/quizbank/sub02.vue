@@ -8,13 +8,19 @@ export default {
       chapterList:[],
       sortedChapterNameList:{},
       evaluationList:[],
+      allChecked:false,
       quizNum:30,
       lowest:0,
       low:0,
       middle:0,
       high:0,
       highest:0,
-      quizsum:20,
+      lowestinp:0,
+      lowinp:0,
+      middleinp:0,
+      highinp:0,
+      highestinp:0,
+      quizsum:0,
       addEvent:true,
       activeList:{
         teaactive:false,
@@ -26,11 +32,13 @@ export default {
         concactive:false,
         objectiveactive:false,
         subjectiveactive:false,
-        lowestactive:false,
-        lowactive:false,
-        middleactive:false,
-        highactive:false,
-        highestactive:false,
+        stepActive:{
+          lowestactive:false,
+          lowactive:false,
+          middleactive:false,
+          highactive:false,
+          highestactive:false,
+        },
       },
     }
   },
@@ -79,12 +87,13 @@ export default {
             vm.activeList.concactive=true;
             vm.activeList.objectiveactive=true;
             vm.activeList.subjectiveactive=true;
-            vm.activeList.lowestactive=true;
-            vm.activeList.lowactive=true;
-            vm.activeList.middleactive=true;
-            vm.activeList.highactive=true;
-            vm.activeList.highestactive=true;
+            vm.activeList.stepActive.lowestactive=true;
+            vm.activeList.stepActive.lowactive=true;
+            vm.activeList.stepActive.middleactive=true;
+            vm.activeList.stepActive.highactive=true;
+            vm.activeList.stepActive.highestactive=true;
             $(".range-wrap .range").show();
+            vm.stepNumChange();
           }
 
           if (_this.prop('checked')) {
@@ -108,6 +117,7 @@ export default {
           checkedbox = $('.unit-cnt>ul').find('input[type=checkbox]:checked');
 
           if(checkedbox.length<=1){
+            vm.allChecked=false;
             vm.activeList.teaactive=false;
             vm.activeList.stuactive=false;
             vm.activeList.dataactive=false;
@@ -117,11 +127,11 @@ export default {
             vm.activeList.concactive=false;
             vm.activeList.objectiveactive=false;
             vm.activeList.subjectiveactive=false;
-            vm.activeList.lowestactive=false;
-            vm.activeList.lowactive=false;
-            vm.activeList.middleactive=false;
-            vm.activeList.highactive=false;
-            vm.activeList.highestactive=false;
+            vm.activeList.stepActive.lowestactive=false;
+            vm.activeList.stepActive.lowactive=false;
+            vm.activeList.stepActive.middleactive=false;
+            vm.activeList.stepActive.highactive=false;
+            vm.activeList.stepActive.highestactive=false;
             $(".range-wrap .range").hide();
             $(".range-wrap .range.total").show();
           }
@@ -140,6 +150,14 @@ export default {
           let stepData = _this.data('step');
 
           _this.toggleClass('active');
+
+          if(_this.text()=='최하') vm.activeList.stepActive.lowestactive=!vm.activeList.stepActive.lowestactive;
+          else if(_this.text()=='하') vm.activeList.stepActive.lowactive=!vm.activeList.stepActive.lowactive;
+          else if(_this.text()=='중') vm.activeList.stepActive.middleactive=!vm.activeList.stepActive.middleactive;
+          else if(_this.text()=='상') vm.activeList.stepActive.highactive=!vm.activeList.stepActive.highactive;
+          else if(_this.text()=='최상') vm.activeList.stepActive.highestactive=!vm.activeList.stepActive.highestactive;
+
+          vm.stepNumChange();
 
           if (_this.hasClass('active')) {
             $(".range[data-step='" + stepData + "']").show();
@@ -228,6 +246,54 @@ export default {
             console.log("evaluation의 끝");
           });
     },
+    // 이거 동작하는지 봐줘
+    stepNumChange(){
+      const activeStep = Object.keys(this.activeList.stepActive).filter(key=>this.activeList.stepActive[key]==true);
+      console.log("activeStep",activeStep);
+      const stepNum = activeStep.map(step=>step.slice(0,-6));
+      console.log("stepNum",stepNum);
+      stepNum.forEach(num=>{
+        this[num]=Math.floor(this.quizNum/stepNum.length);
+        console.log(this[num]);
+      })
+    }
+  },
+  watch:{
+    lowest(cur,ori){
+      this.quizsum+=(cur-ori);
+      this.lowestinp=this.lowest;
+    },
+    low(cur,ori){
+      this.quizsum+=(cur-ori);
+      this.lowinp=this.low;
+    },
+    middle(cur,ori){
+      this.quizsum+=(cur-ori);
+      this.middleinp=this.middle;
+    },
+    high(cur,ori){
+      this.quizsum+=(cur-ori);
+      this.highinp=this.high;
+    },
+    highest(cur,ori){
+      this.quizsum+=(cur-ori);
+      this.highestinp=this.highest;
+    },
+    "activeList.stepActive.lowestactive":function(cur,ori) {
+      if (!cur && ori) this.quizsum -= this.lowest;
+    },
+    "activeList.stepActive.lowactive":function(cur,ori) {
+      if (!cur && ori) this.quizsum -= this.low;
+    },
+    "activeList.stepActive.middleactive":function(cur,ori) {
+      if (!cur && ori) this.quizsum -= this.middle;
+    },
+    "activeList.stepActive.highactive":function(cur,ori) {
+      if (!cur && ori) this.quizsum -= this.high;
+    },
+    "activeList.stepActive.highestactive":function(cur,ori) {
+      if (!cur && ori) this.quizsum -= this.highest;
+    },
   },
   mounted(){
     this.getChapter();
@@ -277,7 +343,7 @@ export default {
                   <div class="unit-cnt scroll-inner">
                     <div class="title-top">
                       <span>단원정보</span>
-                      <input type="checkbox" id="chk01_00" class="allCheck">
+                      <input type="checkbox" id="chk01_00" v-model="allChecked" class="allCheck que-allCheck">
                       <label for="chk01_00">전체선택</label>
                     </div>
                     <ul>
@@ -336,14 +402,14 @@ export default {
                     </div>
                     <div class="count-area">
                       <div class="btn-wrap">
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">10</button>
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">15</button>
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">20</button>
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText">25</button>
-                        <button type="button" class="btn-line active" @click="quizNum=$event.target.innerText">30</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">10</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">15</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">20</button>
+                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">25</button>
+                        <button type="button" class="btn-line active" @click="quizNum=$event.target.innerText;stepNumChange();">30</button>
                       </div>
                       <div class="input-area">
-                        <span class="num">총 <input type="text" v-model.number="quizNum"> 문제</span>
+                        <span class="num">총 <input type="text" v-model.number="quizNum" @blur="quizNum>30?quizNum=30:quizNum-=quizNum%5;stepNumChange();"> 문제</span>
                         <div class="txt">*5의 배수로 입력해주세요. </div>
                       </div>
 
@@ -387,11 +453,11 @@ export default {
                       <span class="tit-text">난이도 구성</span>
                     </div>
                     <div class="step-wrap">
-                      <button type="button" class="btn-line type02 color01" data-step="stap1" :class="{active:activeList.lowestactive}">최하</button>
-                      <button type="button" class="btn-line type02 color02" data-step="stap2" :class="{active:activeList.lowactive}">하</button>
-                      <button type="button" class="btn-line type02 color03" data-step="stap3" :class="{active:activeList.middleactive}">중</button>
-                      <button type="button" class="btn-line type02 color04" data-step="stap4" :class="{active:activeList.highactive}">상</button>
-                      <button type="button" class="btn-line type02 color05" data-step="stap5" :class="{active:activeList.highestactive}">최상</button>
+                      <button type="button" class="btn-line type02 color01" data-step="stap1" :class="{active:activeList.stepActive.lowestactive}">최하</button>
+                      <button type="button" class="btn-line type02 color02" data-step="stap2" :class="{active:activeList.stepActive.lowactive}">하</button>
+                      <button type="button" class="btn-line type02 color03" data-step="stap3" :class="{active:activeList.stepActive.middleactive}">중</button>
+                      <button type="button" class="btn-line type02 color04" data-step="stap4" :class="{active:activeList.stepActive.highactive}">상</button>
+                      <button type="button" class="btn-line type02 color05" data-step="stap5" :class="{active:activeList.stepActive.highestactive}">최상</button>
                     </div>
                   </div>
                   <div class="box">
@@ -402,11 +468,11 @@ export default {
 											</span>
                     </div>
                     <div class="range-wrap">
-                      <span class="range color01" data-step="stap1">최하(n)</span>
-                      <span class="range color02" data-step="stap2">하(n)</span>
-                      <span class="range color03" data-step="stap3">중(n)</span>
-                      <span class="range color04" data-step="stap4">상(n)</span>
-                      <span class="range color05" data-step="stap5">최상(n)</span>
+                      <span class="range color01" data-step="stap1">최하({{ lowest }})</span>
+                      <span class="range color02" data-step="stap2">하({{ low }})</span>
+                      <span class="range color03" data-step="stap3">중({{ middle }})</span>
+                      <span class="range color04" data-step="stap4">상({{ high }})</span>
+                      <span class="range color05" data-step="stap5">최상({{ highest }})</span>
                     </div>
                   </div>
 
@@ -442,23 +508,23 @@ export default {
             <!-- S: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
             <div class="range color01 fail" data-step="stap1">
               <span class="color01">최하</span>
-              <input type="number" v-model.number="lowest">
+              <input type="number" v-model.number="lowestinp" @blur="quizsum>quizNum?lowest-=(quizsum-quizNum):'';">
             </div>
             <div class="range color02" data-step="stap2">
               <span class="color02">하</span>
-              <input type="number" v-model.number="low">
+              <input type="number" v-model.number="lowinp" @blur="quizsum>quizNum?low-=(quizsum-quizNum):'';">
             </div>
             <div class="range color03" data-step="stap3">
               <span class="color03">중</span>
-              <input type="number" v-model.number="middle">
+              <input type="number" v-model.number="middleinp" @blur="quizsum>quizNum?middle-=(quizsum-quizNum):'';">
             </div>
             <div class="range color04" data-step="stap4">
               <span class="color04">상</span>
-              <input type="number" v-model.number="high">
+              <input type="number" v-model.number="highinp" @blur="quizsum>quizNum?high-=(quizsum-quizNum):'';">
             </div>
             <div class="range color05" data-step="stap5">
               <span class="color05">최상</span>
-              <input type="number" v-model.number="highest">
+              <input type="number" v-model.number="highestinp" @blur="quizsum>quizNum?highest-=(quizsum-quizNum):'';">
             </div>
             <div class="range total fail">
               <span>합계</span>

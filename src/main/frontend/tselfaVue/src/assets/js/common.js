@@ -328,7 +328,7 @@ export const common = () => {
           chkCnt
               .find("input:checkbox[name='" + _name + "']")
               .prop("checked", false);
-        }
+        }``
       }
     }
 
