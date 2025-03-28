@@ -25,11 +25,12 @@ export default {
       activeList:{
         teaactive:false,
         stuactive:false,
-        dataactive:false,
-        underactive:false,
-        applyactive:false,
-        knowactive:false,
-        concactive:false,
+        eval1active:false,
+        eval2active:false,
+        eval3active:false,
+        eval4active:false,
+        eval5active:false,
+        eval6active:false,
         objectiveactive:false,
         subjectiveactive:false,
         stepActive:{
@@ -256,6 +257,49 @@ export default {
         this[num]=Math.floor(this.quizNum/stepNum.length);
         console.log(this[num]);
       })
+    },
+    popupClose(){
+      if(window.opener){
+        window.close();
+      }else{
+        alert("창을 닫을 수 없습니다!");
+      }
+    },
+    cancelQuizCount(){
+      if(this.activeList.stepActive.lowestactive==true) this.lowestinp=this.lowest;
+      if(this.activeList.stepActive.lowactive==true) this.lowinp=this.low;
+      if(this.activeList.stepActive.middleactive==true) this.middleinp=this.middle;
+      if(this.activeList.stepActive.highactive==true) this.highinp=this.high;
+      if(this.activeList.stepActive.highestactive==true) this.highestinp=this.highest;
+    },
+    popupInputChange(){
+      if(this.quizsum==this.quizNum){
+        if(this.activeList.stepActive.lowestactive==true) this.lowest=this.lowestinp;
+        if(this.activeList.stepActive.lowactive==true) this.low=this.lowinp;
+        if(this.activeList.stepActive.middleactive==true) this.middle=this.middleinp;
+        if(this.activeList.stepActive.highactive==true) this.high=this.highinp;
+        if(this.activeList.stepActive.highestactive==true) this.highest=this.highestinp;
+
+        // 기존 코드 사용해서 팝업창 닫기
+        let _dim = $(".dim");
+        let _html = $("html , body");
+
+        let _this = $(this);
+        $(".pop-wrap").hide();
+        _html.css("overflow", "auto");
+        _dim.fadeOut();
+      }
+    },
+    difficultyQuizCount(){
+      this.quizsum = 0;
+      if(this.activeList.stepActive.lowestactive==true) this.quizsum += this.lowestinp;
+      if(this.activeList.stepActive.lowactive==true) this.quizsum += this.lowinp;
+      if(this.activeList.stepActive.middleactive==true) this.quizsum += this.middleinp;
+      if(this.activeList.stepActive.highactive==true) this.quizsum += this.highinp;
+      if(this.activeList.stepActive.highestactive==true) this.quizsum += this.highestinp;
+    },
+    evalActive(gindex,index){
+      this.activeList[`eval${gindex*3+index+1}active`]=!this.activeList[`eval${gindex*3+index+1}active`];
     }
   },
   watch:{
@@ -325,7 +369,7 @@ export default {
           <li>STEP 2 문항 편집</li>
           <li>STEP 3 시험지 저장</li>
         </ul>
-        <button type="button" class="del-btn"></button>
+        <button type="button" class="del-btn" @click="popupClose"></button>
       </div>
       <div class="pop-content">
         <div class="view-box">
@@ -432,9 +476,9 @@ export default {
                       <div class="right-area">
                       </div>
                     </div>
-                    <div class="btn-wrap multi" v-for="evalGroup in evaluationList">
-                      <button type="button" :id="evalu.domainId" class="btn-line" :class="{active:activeList.dataactive}"
-                            v-for="evalu in evalGroup">{{ evalu.domainName }}</button>
+                    <div class="btn-wrap multi" v-for="(evalGroup,gindex) in evaluationList">
+                      <button type="button" :id="evalu.domainId" class="btn-line" :class="`{active:activeList.eval${gindex*3+index+1}active}`"
+                            v-for="(evalu,index) in evalGroup" @click="evalActive(gindex,index)">{{ evalu.domainName }}</button>
                     </div>
                   </div>
                   <div class="box">
@@ -500,33 +544,33 @@ export default {
       <div class="pop-inner">
         <div class="pop-header">
           <span>난이도별 문제 수 설정</span>
-          <button type="button" class="pop-close"></button>
+          <button type="button" class="pop-close" @click="cancelQuizCount"></button>
         </div>
         <div class="pop-content">
           <span class="txt">문제 수를 입력하여<br> 난이도별 문제 수를 조정하세요.</span>
           <div class="range-wrap">
             <!-- S: 문제 수 맞지 않을 시 .fail 클래스 추가 -->
-            <div class="range color01 fail" data-step="stap1">
+            <div class="range color01" data-step="stap1" :class="{fail:quizsum!=quizNum}">
               <span class="color01">최하</span>
-              <input type="number" v-model.number="lowestinp" @blur="quizsum>quizNum?lowest-=(quizsum-quizNum):'';">
+              <input type="number" v-model.number="lowestinp" @blur="difficultyQuizCount">
             </div>
-            <div class="range color02" data-step="stap2">
+            <div class="range color02" data-step="stap2" :class="{fail:quizsum!=quizNum}">
               <span class="color02">하</span>
-              <input type="number" v-model.number="lowinp" @blur="quizsum>quizNum?low-=(quizsum-quizNum):'';">
+              <input type="number" v-model.number="lowinp" @blur="difficultyQuizCount">
             </div>
-            <div class="range color03" data-step="stap3">
+            <div class="range color03" data-step="stap3" :class="{fail:quizsum!=quizNum}">
               <span class="color03">중</span>
-              <input type="number" v-model.number="middleinp" @blur="quizsum>quizNum?middle-=(quizsum-quizNum):'';">
+              <input type="number" v-model.number="middleinp" @blur="difficultyQuizCount">
             </div>
-            <div class="range color04" data-step="stap4">
+            <div class="range color04" data-step="stap4" :class="{fail:quizsum!=quizNum}">
               <span class="color04">상</span>
-              <input type="number" v-model.number="highinp" @blur="quizsum>quizNum?high-=(quizsum-quizNum):'';">
+              <input type="number" v-model.number="highinp" @blur="difficultyQuizCount">
             </div>
-            <div class="range color05" data-step="stap5">
+            <div class="range color05" data-step="stap5" :class="{fail:quizsum!=quizNum}">
               <span class="color05">최상</span>
-              <input type="number" v-model.number="highestinp" @blur="quizsum>quizNum?highest-=(quizsum-quizNum):'';">
+              <input type="number" v-model.number="highestinp" @blur="difficultyQuizCount">
             </div>
-            <div class="range total fail">
+            <div class="range total" :class="{fail:quizsum!=quizNum}">
               <span>합계</span>
               <span class="num">{{ quizsum }}</span>
             </div>
@@ -534,8 +578,8 @@ export default {
           </div>
         </div>
         <div class="pop-footer">
-          <button>초기화</button>
-          <button class="disabled">저장</button>
+          <button @click="cancelQuizCount">초기화</button>
+          <button @click="popupInputChange" :class="{disabled:quizsum!=quizNum}">저장</button>
         </div>
       </div>
     </div>
