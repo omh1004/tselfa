@@ -9,6 +9,7 @@ export default {
       sortedChapterNameList:{},
       evaluationList:[],
       allChecked:false,
+      allDisabled:true,
       quizNum:30,
       lowest:0,
       low:0,
@@ -79,13 +80,15 @@ export default {
           let checkedbox = $('.unit-cnt>ul').find('input[type=checkbox]:checked');
 
           if(checkedbox.length<=1){
+            vm.allDisabled=false;
             vm.activeList.teaactive=true;
             vm.activeList.stuactive=true;
-            vm.activeList.dataactive=true;
-            vm.activeList.underactive=true;
-            vm.activeList.applyactive=true;
-            vm.activeList.knowactive=true;
-            vm.activeList.concactive=true;
+            vm.activeList.eval1active=true;
+            vm.activeList.eval2active=true;
+            vm.activeList.eval3active=true;
+            vm.activeList.eval4active=true;
+            vm.activeList.eval5active=true;
+            vm.activeList.eval6active=true;
             vm.activeList.objectiveactive=true;
             vm.activeList.subjectiveactive=true;
             vm.activeList.stepActive.lowestactive=true;
@@ -119,13 +122,15 @@ export default {
 
           if(checkedbox.length<=1){
             vm.allChecked=false;
+            vm.allDisabled=true;
             vm.activeList.teaactive=false;
             vm.activeList.stuactive=false;
-            vm.activeList.dataactive=false;
-            vm.activeList.underactive=false;
-            vm.activeList.applyactive=false;
-            vm.activeList.knowactive=false;
-            vm.activeList.concactive=false;
+            vm.activeList.eval1active=false;
+            vm.activeList.eval2active=false;
+            vm.activeList.eval3active=false;
+            vm.activeList.eval4active=false;
+            vm.activeList.eval5active=false;
+            vm.activeList.eval6active=false;
             vm.activeList.objectiveactive=false;
             vm.activeList.subjectiveactive=false;
             vm.activeList.stepActive.lowestactive=false;
@@ -446,14 +451,14 @@ export default {
                     </div>
                     <div class="count-area">
                       <div class="btn-wrap">
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">10</button>
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">15</button>
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">20</button>
-                        <button type="button" class="btn-line" @click="quizNum=$event.target.innerText;stepNumChange();">25</button>
-                        <button type="button" class="btn-line active" @click="quizNum=$event.target.innerText;stepNumChange();">30</button>
+                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">10</button>
+                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">15</button>
+                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">20</button>
+                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">25</button>
+                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">30</button>
                       </div>
                       <div class="input-area">
-                        <span class="num">총 <input type="text" v-model.number="quizNum" @blur="quizNum>30?quizNum=30:quizNum-=quizNum%5;stepNumChange();"> 문제</span>
+                        <span class="num">총 <input type="text" v-model.number="quizNum" :disabled="allDisabled" @blur="quizNum>30?quizNum=30:quizNum-=quizNum%5;stepNumChange();"> 문제</span>
                         <div class="txt">*5의 배수로 입력해주세요. </div>
                       </div>
 
@@ -466,8 +471,8 @@ export default {
                       </div>
                     </div>
                     <div class="btn-wrap multi">
-                      <button type="button" class="btn-line" :class="{active:activeList.teaactive}">교사용(교사용 DVD, 지도서, 신규 개발 등)</button>
-                      <button type="button" class="btn-line" :class="{active:activeList.stuactive}">학생용(자습서, 평가문제집 등)</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.teaactive}" :disabled="allDisabled">교사용(교사용 DVD, 지도서, 신규 개발 등)</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.stuactive}" :disabled="allDisabled">학생용(자습서, 평가문제집 등)</button>
                     </div>
                   </div>
                   <div class="box">
@@ -477,8 +482,8 @@ export default {
                       </div>
                     </div>
                     <div class="btn-wrap multi" v-for="(evalGroup,gindex) in evaluationList">
-                      <button type="button" :id="evalu.domainId" class="btn-line" :class="`{active:activeList.eval${gindex*3+index+1}active}`"
-                            v-for="(evalu,index) in evalGroup" @click="evalActive(gindex,index)">{{ evalu.domainName }}</button>
+                      <button type="button" :id="evalu.domainId" class="btn-line" :class="{active:activeList[`eval${gindex*3+index+1}active`]}"
+                              :disabled="allDisabled" v-for="(evalu,index) in evalGroup" @click="evalActive(gindex,index)">{{ evalu.domainName }}</button>
                     </div>
                   </div>
                   <div class="box">
@@ -488,8 +493,8 @@ export default {
                       </div>
                     </div>
                     <div class="btn-wrap multi">
-                      <button type="button" class="btn-line" :class="{active:activeList.objectiveactive}">객관식</button>
-                      <button type="button" class="btn-line" :class="{active:activeList.subjectiveactive}">주관식</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.objectiveactive}" :disabled="allDisabled">객관식</button>
+                      <button type="button" class="btn-line" :class="{active:activeList.subjectiveactive}" :disabled="allDisabled">주관식</button>
                     </div>
                   </div>
                   <div class="box">
@@ -497,11 +502,11 @@ export default {
                       <span class="tit-text">난이도 구성</span>
                     </div>
                     <div class="step-wrap">
-                      <button type="button" class="btn-line type02 color01" data-step="stap1" :class="{active:activeList.stepActive.lowestactive}">최하</button>
-                      <button type="button" class="btn-line type02 color02" data-step="stap2" :class="{active:activeList.stepActive.lowactive}">하</button>
-                      <button type="button" class="btn-line type02 color03" data-step="stap3" :class="{active:activeList.stepActive.middleactive}">중</button>
-                      <button type="button" class="btn-line type02 color04" data-step="stap4" :class="{active:activeList.stepActive.highactive}">상</button>
-                      <button type="button" class="btn-line type02 color05" data-step="stap5" :class="{active:activeList.stepActive.highestactive}">최상</button>
+                      <button type="button" class="btn-line type02 color01" data-step="stap1" :class="{active:activeList.stepActive.lowestactive}" :disabled="allDisabled">최하</button>
+                      <button type="button" class="btn-line type02 color02" data-step="stap2" :class="{active:activeList.stepActive.lowactive}" :disabled="allDisabled">하</button>
+                      <button type="button" class="btn-line type02 color03" data-step="stap3" :class="{active:activeList.stepActive.middleactive}" :disabled="allDisabled">중</button>
+                      <button type="button" class="btn-line type02 color04" data-step="stap4" :class="{active:activeList.stepActive.highactive}" :disabled="allDisabled">상</button>
+                      <button type="button" class="btn-line type02 color05" data-step="stap5" :class="{active:activeList.stepActive.highestactive}" :disabled="allDisabled">최상</button>
                     </div>
                   </div>
                   <div class="box">
