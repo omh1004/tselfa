@@ -417,7 +417,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <template>
