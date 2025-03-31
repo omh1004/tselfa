@@ -10,7 +10,7 @@ export default {
       evaluationList:[],
       allChecked:false,
       allDisabled:true,
-      quizNum:30,
+      quizNum:'',
       lowest:0,
       low:0,
       middle:0,
@@ -34,6 +34,11 @@ export default {
         eval6active:false,
         objectiveactive:false,
         subjectiveactive:false,
+        quiz10:false,
+        quiz15:false,
+        quiz20:false,
+        quiz25:false,
+        quiz30:false,
         stepActive:{
           lowestactive:false,
           lowactive:false,
@@ -91,6 +96,8 @@ export default {
             vm.activeList.eval6active=true;
             vm.activeList.objectiveactive=true;
             vm.activeList.subjectiveactive=true;
+            vm.activeList.quiz30=true;
+            vm.quizNum=30;
             vm.activeList.stepActive.lowestactive=true;
             vm.activeList.stepActive.lowactive=true;
             vm.activeList.stepActive.middleactive=true;
@@ -133,11 +140,18 @@ export default {
             vm.activeList.eval6active=false;
             vm.activeList.objectiveactive=false;
             vm.activeList.subjectiveactive=false;
+            vm.activeList.quiz10=false;
+            vm.activeList.quiz15=false;
+            vm.activeList.quiz20=false;
+            vm.activeList.quiz25=false;
+            vm.activeList.quiz30=false;
+            vm.quizNum='';
             vm.activeList.stepActive.lowestactive=false;
             vm.activeList.stepActive.lowactive=false;
             vm.activeList.stepActive.middleactive=false;
             vm.activeList.stepActive.highactive=false;
             vm.activeList.stepActive.highestactive=false;
+            $(".btn-wrap .btn-line").removeClass('active');
             $(".range-wrap .range").hide();
             $(".range-wrap .range.total").show();
           }
@@ -279,11 +293,27 @@ export default {
     },
     popupInputChange(){
       if(this.quizsum==this.quizNum){
-        if(this.activeList.stepActive.lowestactive==true) this.lowest=this.lowestinp;
-        if(this.activeList.stepActive.lowactive==true) this.low=this.lowinp;
-        if(this.activeList.stepActive.middleactive==true) this.middle=this.middleinp;
-        if(this.activeList.stepActive.highactive==true) this.high=this.highinp;
-        if(this.activeList.stepActive.highestactive==true) this.highest=this.highestinp;
+        this.quizsum = 0;
+        if(this.activeList.stepActive.lowestactive==true) {
+          this.quizsum += this.lowest;
+          this.lowest=this.lowestinp;
+        }
+        if(this.activeList.stepActive.lowactive==true) {
+          this.quizsum += this.low;
+          this.low=this.lowinp;
+        }
+        if(this.activeList.stepActive.middleactive==true) {
+          this.quizsum += this.middle;
+          this.middle=this.middleinp;
+        }
+        if(this.activeList.stepActive.highactive==true) {
+          this.quizsum += this.high;
+          this.high=this.highinp;
+        }
+        if(this.activeList.stepActive.highestactive==true) {
+          this.quizsum += this.highest;
+          this.highest=this.highestinp;
+        }
 
         // 기존 코드 사용해서 팝업창 닫기
         let _dim = $(".dim");
@@ -309,39 +339,64 @@ export default {
   },
   watch:{
     lowest(cur,ori){
-      this.quizsum+=(cur-ori);
-      this.lowestinp=this.lowest;
+      if(this.activeList.stepActive.lowestactive) {
+        this.quizsum += (cur - ori);
+        this.lowestinp = this.lowest;
+      }
     },
     low(cur,ori){
-      this.quizsum+=(cur-ori);
-      this.lowinp=this.low;
+      if(this.activeList.stepActive.lowactive) {
+        this.quizsum += (cur - ori);
+        this.lowinp = this.low;
+      }
     },
     middle(cur,ori){
-      this.quizsum+=(cur-ori);
-      this.middleinp=this.middle;
+      if(this.activeList.stepActive.middleactive) {
+        this.quizsum += (cur - ori);
+        this.middleinp = this.middle;
+      }
     },
     high(cur,ori){
-      this.quizsum+=(cur-ori);
-      this.highinp=this.high;
+      if(this.activeList.stepActive.highactive) {
+        this.quizsum += (cur - ori);
+        this.highinp = this.high;
+      }
     },
     highest(cur,ori){
-      this.quizsum+=(cur-ori);
-      this.highestinp=this.highest;
+      if(this.activeList.stepActive.highestactive){
+        this.quizsum += (cur-ori);
+        this.highestinp=this.highest;
+      }
     },
     "activeList.stepActive.lowestactive":function(cur,ori) {
-      if (!cur && ori) this.quizsum -= this.lowest;
+      if (!cur && ori) {
+        this.quizsum -= this.lowest;
+        this.lowest = 0;
+      }
     },
     "activeList.stepActive.lowactive":function(cur,ori) {
-      if (!cur && ori) this.quizsum -= this.low;
+      if (!cur && ori) {
+        this.quizsum -= this.low;
+        this.low = 0;
+      }
     },
     "activeList.stepActive.middleactive":function(cur,ori) {
-      if (!cur && ori) this.quizsum -= this.middle;
+      if (!cur && ori) {
+        this.quizsum -= this.middle;
+        this.middle = 0;
+      }
     },
     "activeList.stepActive.highactive":function(cur,ori) {
-      if (!cur && ori) this.quizsum -= this.high;
+      if (!cur && ori) {
+        this.quizsum -= this.high;
+        this.high = 0;
+      }
     },
     "activeList.stepActive.highestactive":function(cur,ori) {
-      if (!cur && ori) this.quizsum -= this.highest;
+      if (!cur && ori) {
+        this.quizsum -= this.highest;
+        this.highest = 0;
+      }
     },
   },
   mounted(){
@@ -451,11 +506,11 @@ export default {
                     </div>
                     <div class="count-area">
                       <div class="btn-wrap">
-                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">10</button>
-                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">15</button>
-                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">20</button>
-                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">25</button>
-                        <button type="button" class="btn-line" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">30</button>
+                        <button type="button" class="btn-line" :class="{active:activeList.quiz10}" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">10</button>
+                        <button type="button" class="btn-line" :class="{active:activeList.quiz15}" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">15</button>
+                        <button type="button" class="btn-line" :class="{active:activeList.quiz20}" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">20</button>
+                        <button type="button" class="btn-line" :class="{active:activeList.quiz25}" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">25</button>
+                        <button type="button" class="btn-line" :class="{active:activeList.quiz30}" :disabled="allDisabled" @click="quizNum=$event.target.innerText;stepNumChange();">30</button>
                       </div>
                       <div class="input-area">
                         <span class="num">총 <input type="text" v-model.number="quizNum" :disabled="allDisabled" @blur="quizNum>30?quizNum=30:quizNum-=quizNum%5;stepNumChange();"> 문제</span>
