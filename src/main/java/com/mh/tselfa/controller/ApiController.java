@@ -97,7 +97,7 @@ public class ApiController {
 
     // 개발중...
     @PostMapping("/itemlist")
-    public ResponseEntity<Object> itemList(@RequestBody Chapter chapter){
+    public ResponseEntity<Object> itemList(@RequestBody Map<String,Object> params){
         String response = "";
         try{
             URL url = new URL("https://tsherpa.item-factory.com/item-img/chapters/item-list");
@@ -107,7 +107,6 @@ public class ApiController {
             connect.setDoOutput(true);
             connect.setRequestProperty("Content-Type", "application/json");
 
-            Map<String, String> params = Map.of("subjectId","1136");    // 이거 바꿔야됨
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(params);
             byte[] input = json.getBytes();
@@ -121,6 +120,8 @@ public class ApiController {
                 sb.append((char)data);
             }
             response = sb.toString();
+
+            return ResponseEntity.ok().body(response);
         }catch(MalformedURLException e) {
             log.error("URL이 잘못되었습니다 : " + e.getMessage());
         }catch(IOException e){

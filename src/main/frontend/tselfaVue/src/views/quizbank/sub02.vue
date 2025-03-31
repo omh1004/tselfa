@@ -243,16 +243,49 @@ export default {
       }
     },
     editQuiz(){
+      const minorClassification = [];
+      const levelCnt = [this.lowest, this.low, this.middle, this.high, this.highest];
+      let questionForm = '';
+      const activityCategoryList = [];
       $(".depth04 input[type=checkbox]:checked").next("label").children("span").toArray().forEach(span=>{
         const getTopic = this.chapterList.find(chapter=>chapter.topicChapterName==span.innerText);
         console.log(getTopic);
-        // fetch 써야 함? 기능 만들기 귀찮은데
-        // 개발중 사용금지
-        fetch('http://localhost:8080/api/itemlist',{
-
-        }).then(response=>response.json())
-            .then(data=>console.log(data));
+        minorClassification.push({'subject':getTopic.subjectId,'topic':getTopic.topicChapterId});
       });
+      console.log(minorClassification);
+
+      if(this.activeList.objectiveactive && this.activeList.subjectiveactive) questionForm = 'multiple, subjective';
+      else if(this.activeList.objectiveactive) questionForm = 'multiple';
+      else if(this.activeList.subjectiveactive) questionForm = 'subjective';
+
+      for(let i=0;i<this.evaluationList.length;i++){
+        for(let j=0;j<this.evaluationList[i].length;j++){
+          console.log(`eval${i*3+j+1}active`);
+          if(`eval${i*3+j+1}active` && this.evaluationList[i][j]!=null){
+            console.log("eval push!");
+            console.log(this.evaluationList);
+            console.log(this.evaluationList[i][j]);
+            activityCategoryList.push(this.evaluationList[i][j].domainId);
+          }
+        }
+      }
+      console.log(activityCategoryList);
+
+      // fetch 써야 함? 기능 만들기 귀찮은데
+      // 개발중 사용금지
+      fetch('http://localhost:8080/api/itemlist',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          'minorClassification':minorClassification,
+          'levelCnt':levelCnt,
+          'questionForm':questionForm,
+          'activityCategoryList':activityCategoryList
+        })
+      }).then(response=>response.json())
+      .then(data=>console.log(data));
     },
     getEvaluation(){
       fetch('http://localhost:8080/api/evaluationlist')
